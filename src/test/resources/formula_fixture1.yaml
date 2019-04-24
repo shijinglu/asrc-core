@@ -1,0 +1,37 @@
+---
+- key: db-url
+  value: localhost
+- key: sigma_threshold
+  value:
+    - category: segment
+      key: high tech companies
+      rule: stock_id in (314, 98, 299979, 6022)
+      fallthrough: false
+      action: implicit_log
+      value:
+        - category: treatment
+          key: control
+          rule: md5mod($APP_NAME, 100) <= 50
+          fallthrough: false
+          value: 100
+        - category: treatment
+          key: treate
+          rule: true
+          fallthrough: false
+          value: 100
+    - category: segment
+      key: low valotility companies
+      rule: stock_id in (98, 622)
+      fallthrough: false
+      action: implicit_log
+      value:
+        - category: treatment
+          key: control
+          rule: md5mod($APP_NAME, 100) <= 50
+          fallthrough: false
+          value: 100
+        - category: treatment
+          key: treate
+          rule: true
+          fallthrough: false
+          value: 100
