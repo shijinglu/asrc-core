@@ -1,4 +1,4 @@
-package org.shijinglu.asrc.model;
+package org.shijinglu.asrc.core;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class Formula {
 
     public enum FIELDS {
         KEY("key"),
-        VALUE("data"),
+        VALUE("value"),
         CATEGORY("category"),
         RULE("rule"),
         FALTHROUGH("fallthrough"),
@@ -82,15 +82,29 @@ public class Formula {
         boolean match(Map<String, IData> context) {
             return this.expr.map(xp -> xp.eval(context)).orElse(true);
         }
+
+        @Override
+        public String toString() {
+            return this.ruleStr.orElse("");
+        }
     }
 
-    private final String key;
-    private final Optional<IData> data;
-    private final Rule rule;
-    private final Category category;
-    private final boolean fallthrough;
-    private final Optional<IAction> action;
-    private final List<Formula> formulas;
+    protected final String key;
+    protected final Optional<IData> data;
+    protected final Rule rule;
+    protected final Category category;
+    protected final boolean fallthrough;
+    protected final Optional<Action> action;
+    protected final List<Formula> formulas;
+
+    public String getKey() {
+        return key;
+    }
+
+    /** Test if current formula is the terminal node of the eval tree. */
+    public boolean isLeaf() {
+        return formulas.isEmpty();
+    }
 
     /**
      * Constructor for naive allocation which is basically a string
@@ -114,7 +128,7 @@ public class Formula {
             Optional<IData> data,
             Rule rule,
             boolean fallthrough,
-            Optional<IAction> action,
+            Optional<Action> action,
             List<Formula> formulas) {
         this.category = category;
         this.key = key;
@@ -144,7 +158,7 @@ public class Formula {
         return new StringData(value.toString());
     }
 
-    static IAction parseAction(Object action) {
+    static Action parseAction(Object action) {
         return null;
     }
 
@@ -172,11 +186,14 @@ public class Formula {
         Object fallthroughObj = rawObj.get(FIELDS.FALTHROUGH.name);
         Object actionObj = rawObj.get(FIELDS.ACTIONS.name);
 
-        Rule rule = ruleObj == null ? new Rule(null) : new Rule(ruleObj.toString());
+        Rule rule =
+                (ruleObj == null || ruleObj.toString().isEmpty())
+                        ? new Rule(null)
+                        : new Rule(ruleObj.toString());
         Category category = Category.from((String) categoryObj);
         boolean fallthrough =
                 fallthroughObj == null ? false : Boolean.valueOf(fallthroughObj.toString());
-        IAction action = parseAction(actionObj);
+        Action action = parseAction(actionObj);
 
         if (!(valueObj instanceof List)) {
             // leafs, data contains data
@@ -214,8 +231,8 @@ public class Formula {
      * @return data object if a match is found, none otherwise.
      */
     public Optional<IData> derive(Map<String, IData> context) {
-        if (this.rule.match(context)) {
-            return this.data;
+        if (!this.rule.match(context)) {
+            return Optional.empty();
         }
         Optional<IData> res = Optional.empty();
         for (Formula formula : this.formulas) {

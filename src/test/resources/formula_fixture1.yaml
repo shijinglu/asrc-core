@@ -18,7 +18,7 @@
           key: treate
           rule: true
           fallthrough: false
-          value: 100
+          value: 101
     - category: segment
       key: low valotility companies
       rule: stock_id in (98, 622)
@@ -29,9 +29,9 @@
           key: control
           rule: md5mod($APP_NAME, 100) <= 50
           fallthrough: false
-          value: 100
+          value: '110'
         - category: treatment
           key: treate
           rule: true
           fallthrough: false
-          value: 100
+          value: '111'

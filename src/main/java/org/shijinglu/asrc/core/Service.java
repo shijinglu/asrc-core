@@ -1,4 +1,4 @@
-package org.shijinglu.asrc;
+package org.shijinglu.asrc.core;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.AbstractMap;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.shijinglu.asrc.gateway.IFormulaProvider;
 import org.shijinglu.lure.extensions.IData;
 import org.shijinglu.lure.extensions.IFunction;
 
@@ -20,7 +19,8 @@ public class Service {
      * @param udfs user defined functions. e.g. `user_id("alice") in [1, 2, 3]` e.g.
      *     `volatility(stock_name) > 0.4`
      */
-    public Service(IFormulaProvider formulaProvider, List<IFunction> udfs) {
+    public Service(
+            IFormulaProvider formulaProvider, List<IFunction> udfs, EventHandler eventHandler) {
         this.formulaProvider = formulaProvider;
         // Install udfs here.
     }

@@ -1,9 +1,8 @@
-package org.shijinglu.asrc.gateway;
+package org.shijinglu.asrc.core;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.shijinglu.asrc.model.Formula;
 
 /**
  * Formulas can be stored in a code repository like git or hg, or stored in data base.
