@@ -6,6 +6,7 @@ import com.google.common.collect.Streams;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,12 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.shijinglu.asrc.core.Formula;
 import org.shijinglu.asrc.core.IFormulaProvider;
 import org.yaml.snakeyaml.Yaml;
 
-/** Provide formulas from local yaml files (possibly synced with a git repository). */
+/**
+ * Provide formulas from local yaml files (possibly synced with a git repository). This class
+ * promise not to throw any exception for loading failures. Instead, it logs the IOExceptions to
+ * {@code java.util.logging} facility.
+ */
 public class YamlFormulaProvider implements IFormulaProvider {
     private final Path rootDir;
     private ImmutableMap<String, Map<String, Formula>> allFormulas = null;
@@ -70,9 +77,17 @@ public class YamlFormulaProvider implements IFormulaProvider {
         }
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            List<Object> rawFormulas =
-                    new Yaml().load(new BufferedInputStream(new FileInputStream(file.toFile())));
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+
+            InputStream inputStream;
+            try {
+                inputStream = new FileInputStream(file.toFile());
+            } catch (IOException e) {
+                Logger.getLogger(YamlFormulaProvider.class.getName())
+                        .log(Level.WARNING, "Yaml file not exist", e);
+                return FileVisitResult.CONTINUE;
+            }
+            List<Object> rawFormulas = new Yaml().load(new BufferedInputStream(inputStream));
 
             ImmutableMap.Builder<String, Formula> formulasBuilder = ImmutableMap.builder();
             ImmutableSet.Builder<String> keysBuilder = ImmutableSet.builder();
@@ -98,9 +113,14 @@ public class YamlFormulaProvider implements IFormulaProvider {
         }
     }
 
-    private synchronized void loadYamlFiles(Path path) throws IOException {
+    private synchronized void loadYamlFiles(Path path) {
         ParseYamlVisitor visitor = new ParseYamlVisitor(rootDir);
-        Files.walkFileTree(path, visitor);
+        try {
+            Files.walkFileTree(path, visitor);
+        } catch (IOException e) {
+            Logger.getLogger(YamlFormulaProvider.class.getName())
+                    .log(Level.WARNING, "could not load at least one formula", e);
+        }
         this.allFormulas = visitor.getFormulas();
         this.allKeys = visitor.getKeys();
     }

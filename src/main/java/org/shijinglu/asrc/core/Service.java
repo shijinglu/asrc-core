@@ -5,13 +5,17 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.shijinglu.lure.extensions.ExtensionManager;
 import org.shijinglu.lure.extensions.IData;
 import org.shijinglu.lure.extensions.IFunction;
 
 public class Service {
     private final IFormulaProvider formulaProvider;
-
+    private static final int PARALLELISM = 100;
+    private static final ForkJoinPool FORK_JOIN_POOL = new ForkJoinPool(PARALLELISM);
     /**
      * Construct the service.
      *
@@ -20,9 +24,12 @@ public class Service {
      *     `volatility(stock_name) > 0.4`
      */
     public Service(
-            IFormulaProvider formulaProvider, List<IFunction> udfs, EventHandler eventHandler) {
+            IFormulaProvider formulaProvider, List<IFunction> udfs, EventSender eventSender) {
         this.formulaProvider = formulaProvider;
-        // Install udfs here.
+        udfs.forEach(ExtensionManager::addFunction);
+        if (eventSender != null) {
+            EventHandler.setSender(eventSender);
+        }
     }
 
     /**
@@ -48,14 +55,22 @@ public class Service {
      * @param namespace path to the stored formulas.
      * @param context provided contextual parameters
      * @return remote configs
-     * @throws IllegalArgumentException
      */
-    public Map<String, IData> getConfigs(String namespace, Map<String, IData> context)
-            throws IllegalArgumentException {
-        return context.entrySet()
-                .parallelStream()
-                .map(x -> this.getConfig(namespace, x.getKey(), context))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    public Map<String, IData> getConfigs(String namespace, Map<String, IData> context) {
+        Stream<Map.Entry<String, IData>> stream =
+                context.entrySet()
+                        .parallelStream()
+                        .map(x -> this.getConfig(namespace, x.getKey(), context))
+                        .filter(Objects::nonNull);
+
+        return FORK_JOIN_POOL
+                .submit(
+                        () ->
+                                stream.collect(
+                                        Collectors.toConcurrentMap(
+                                                Map.Entry::getKey,
+                                                Map.Entry::getValue,
+                                                (s, a) -> s)))
+                .join();
     }
 }
