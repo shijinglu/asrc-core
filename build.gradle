@@ -3,14 +3,16 @@ plugins {
 }
 
 group 'org.shijinglu'
-version '1.0-SNAPSHOT'
+version '0.1.0'
 
 sourceCompatibility = 1.8
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 repositories {
     maven { url "https://jitpack.io" }
     mavenCentral()
-
 }
 
 dependencies {
@@ -20,4 +22,37 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '27.+'
     compile group: 'redis.clients', name: 'jedis', version: '2.+'
     implementation 'org.shijinglu:lure-java:v0.1.4'
+}
+
+// Publish to Maven Repository
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+        maven(MavenPublication) {
+            groupId = 'org.shijinglu'
+            artifactId = 'asrc-server-core'
+            version = "${version}"
+            from components.java
+            pom {
+                name = 'A Simple Configuration Server'
+                description = 'A light ware DSL lib that handles rule evaluation'
+                developers {
+                    developer {
+                        id = 'shijinglu'
+                        name = 'Shijing Lu'
+                        email = 'Shijing.Lu@gmail.com'
+                    }
+                }
+                scm {
+                    // git@github.com:shijinglu/asrc-core.git
+                    connection = 'scm:git:git@github.com:shijinglu/asrc-core.git'
+                    developerConnection = 'scm:git:ssh://github.com/shijinglu/asrc-core.git'
+                    url = 'https://github.com/shijinglu/asrc-core'
+                }
+            }
+        }
+
+    }
 }
