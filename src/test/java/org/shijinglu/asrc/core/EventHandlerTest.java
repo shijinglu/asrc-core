@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class EventHandlerTest {
@@ -13,8 +14,14 @@ public class EventHandlerTest {
     private static final SimpleEvent E4 = SimpleEvent.of("four", "Thursday");
     private static final SimpleEvent E5 = SimpleEvent.of("four", "Friday");
 
+    @Before
+    public void setup() {
+        EventHandler.setSender(null);
+    }
+
     @Test
     public void enqueueEventsIfLoggerNotSet() throws ExecutionException, InterruptedException {
+
         EventHandler.acceptEvent(E1).get(); // E1 to queue
         Assert.assertTrue(EventHandler.EVENTS_QUEUE.contains(E1));
         EventHandler.acceptEvent(E2).get(); // E2 to queue
