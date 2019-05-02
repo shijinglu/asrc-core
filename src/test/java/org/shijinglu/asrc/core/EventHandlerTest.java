@@ -31,7 +31,7 @@ public class EventHandlerTest {
         EventSender sender =
                 new EventSender() {
                     @Override
-                    boolean send(IEvent event) {
+                    public boolean send(IEvent event) {
                         return sentEvents.add(event);
                     }
                 };
@@ -61,7 +61,7 @@ public class EventHandlerTest {
         EventSender sender =
                 new EventSender() {
                     @Override
-                    boolean send(IEvent event) {
+                    public boolean send(IEvent event) {
                         return sentEvents.add(event);
                     }
                 };

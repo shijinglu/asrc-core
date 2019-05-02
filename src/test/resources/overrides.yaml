@@ -1,0 +1,26 @@
+---
+- key: toggle_flag_on
+  value: false
+- key: toggle_flag_off
+  value: true
+- key: PI
+  value: 3.1415926
+- key: NATURAL_CONSTANT_E
+  value: 2.71828
+- key: NY_ZIP
+  value: 10002
+- key: SF_ZIP
+  value: 94597
+- key: first_name
+  value: Harry
+- key: last_name
+  value: Potter
+# these values may not exist in the context
+- key: additional_bool
+  value: true
+- key: additional_int
+  value: 123
+- key: additional_double
+  value: 0.123
+- key: additional_string
+  value: hello world!

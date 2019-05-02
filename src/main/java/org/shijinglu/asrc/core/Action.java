@@ -10,9 +10,10 @@ import org.shijinglu.lure.extensions.IData;
 /**
  * Protocol that defines an action when an allocation node is visited or a match is found. For
  * example, log_analytics logs an analytical event. log_debug, logs the detailed eval steps at each
- * node.
+ * node. - log_implicit: log current event if current is a leaf - log_debug: log an analytical event
  */
 public enum Action {
+    NOOP("no_op"),
     LOG_IMPLICIT("log_implicit") {
         @Override
         void run(Formula root, Formula leaf, IData resolved) {
@@ -52,5 +53,15 @@ public enum Action {
                 put(RULE.name(), leaf.rule.toString());
             }
         };
+    }
+
+    /** Get action enum from its description */
+    static Action from(String name) {
+        for (Action action : Action.values()) {
+            if (action.name.equalsIgnoreCase(name)) {
+                return action;
+            }
+        }
+        return NOOP;
     }
 }

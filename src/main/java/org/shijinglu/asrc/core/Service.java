@@ -2,12 +2,13 @@ package org.shijinglu.asrc.core;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.shijinglu.lure.extensions.ExtensionManager;
 import org.shijinglu.lure.extensions.IData;
 import org.shijinglu.lure.extensions.IFunction;
@@ -57,20 +58,20 @@ public class Service {
      * @return remote configs
      */
     public Map<String, IData> getConfigs(String namespace, Map<String, IData> context) {
-        Stream<Map.Entry<String, IData>> stream =
-                context.entrySet()
-                        .parallelStream()
-                        .map(x -> this.getConfig(namespace, x.getKey(), context))
-                        .filter(Objects::nonNull);
-
+        HashSet<String> keys = new HashSet<>();
+        keys.addAll(context.keySet());
+        keys.addAll(formulaProvider.allKeys().getOrDefault(namespace, Collections.emptySet()));
         return FORK_JOIN_POOL
                 .submit(
                         () ->
-                                stream.collect(
-                                        Collectors.toConcurrentMap(
-                                                Map.Entry::getKey,
-                                                Map.Entry::getValue,
-                                                (s, a) -> s)))
+                                keys.parallelStream()
+                                        .map(x -> this.getConfig(namespace, x, context))
+                                        .filter(Objects::nonNull)
+                                        .collect(
+                                                Collectors.toConcurrentMap(
+                                                        Map.Entry::getKey,
+                                                        Map.Entry::getValue,
+                                                        (s, a) -> s)))
                 .join();
     }
 }

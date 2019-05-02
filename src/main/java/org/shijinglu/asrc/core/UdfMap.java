@@ -7,7 +7,12 @@ import org.shijinglu.lure.LureException;
 import org.shijinglu.lure.extensions.IData;
 import org.shijinglu.lure.extensions.IFunction;
 
-/** Look up values from KVStore */
+/**
+ * An UDF in lure that can Look up values from KVStore e.g. {@code cache("hello") == "world" } first
+ * looks up value in the KVStrore and then compare that value to "world"
+ *
+ * <p>e.g. {@code cache("username", "alice") == "alexander hamilton"}
+ */
 public class UdfMap implements IFunction {
     private final KVStore kvStore;
 

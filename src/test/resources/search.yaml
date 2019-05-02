@@ -1,0 +1,172 @@
+---
+- key: config_000
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E between 1 and 3
+              value: 1000 # <- return value
+        - category: treatment
+          key: treatment_group_01
+          rule: true
+          value: 101
+    - category: segment
+      key: segment_1
+      rule: stock_id in (98, 622)
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: md5mod(APP_NAME, 100) <= 50
+          fallthrough: false
+          value: '110'
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          value: '111'
+- key: config_001
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E < 0
+              value: 0
+            - category: segment
+              key: segment_001
+              value: 1001 # <- return value
+        - category: treatment
+          key: treatment_group_01
+          rule: true
+          value: 101
+    - category: segment
+      key: segment_1
+      rule: stock_id in (98, 622)
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: md5mod(APP_NAME, 100) <= 50
+          fallthrough: false
+          value: '110'
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          value: '111'
+- key: config_01
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E < 0
+              value: 0
+            - category: segment
+              key: segment_001
+              rule: false
+              value: 1001
+        - category: treatment
+          key: treatment_group_01
+          rule: true
+          value: 101 # <- returned value
+    - category: segment
+      key: segment_1
+      rule: stock_id in (98, 622)
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: md5mod(APP_NAME, 100) <= 50
+          fallthrough: false
+          value: '110'
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          value: '111'
+- key: config_10
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI < 3
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E < 0
+              value: 0
+            - category: segment
+              key: segment_001
+              rule: false
+              value: 1001
+        - category: treatment
+          key: treatment_group_01
+          rule: first_name == 'shijing'
+          value: 1010
+    - category: segment
+      key: segment_1
+      rule: last_name == 'Liddell'
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: first_name == 'Alice'
+          value: 110  # <- returned value
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          value: '111'
+- key: config_11
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E < 0
+              value: 0
+            - category: segment
+              key: segment_001
+              rule: false
+              value: 1001
+        - category: treatment
+          key: treatment_group_01
+          rule: first_name == 'shijing'
+          value: 1010
+    - category: segment
+      key: segment_1
+      rule: last_name == 'Liddell'
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: first_name != 'Alice'
+          value: 110
+        - category: treatment
+          key: treatment_group_11
+          value: 111

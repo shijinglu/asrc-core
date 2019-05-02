@@ -44,4 +44,10 @@ public class FormulaTest {
         Assert.assertFalse(f111.fallthrough);
         Assert.assertEquals(f111.data.get().toInt(), 111);
     }
+
+    static class Item {
+        public int id;
+        public String itemName;
+        public double owner;
+    }
 }

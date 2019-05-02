@@ -159,7 +159,7 @@ public class Formula {
     }
 
     static Action parseAction(Object action) {
-        return null;
+        return action == null ? null : Action.from(action.toString());
     }
 
     /**
@@ -226,7 +226,9 @@ public class Formula {
     }
 
     /**
-     * Given context, obtain the corresponding data.
+     * Given context, obtain the corresponding data: - if rule matches, recursively find sub matches
+     * and return corresponding data, if no sub match found, return current - if rule does not
+     * match, return empty.
      *
      * @return data object if a match is found, none otherwise.
      */
@@ -234,7 +236,7 @@ public class Formula {
         if (!this.rule.match(context)) {
             return Optional.empty();
         }
-        Optional<IData> res = Optional.empty();
+        Optional<IData> res = this.data;
         for (Formula formula : this.formulas) {
             res = formula.derive(context);
             res.ifPresent(d -> this.action.ifPresent(ac -> ac.run(this, formula, d)));

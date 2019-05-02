@@ -1,0 +1,93 @@
+---
+- key: config_11_implicit
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      action: log_implicit
+      fallthrough: true
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          fallthrough: true
+          action: log_implicit
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E > 1
+              value: 1000
+              fallthrough: true
+              action: log_implicit
+            - category: segment
+              key: segment_001
+              action: log_implicit
+              value: 1001
+        - category: treatment
+          key: treatment_group_01
+          rule: true
+          value: 101
+          action: log_implicit
+    - category: segment
+      key: segment_1
+      rule: first_name == 'Alice'
+      action: log_implicit
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: last_name == 'Liddell'
+          value: 110
+          fallthrough: true
+          action: log_implicit
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          action: log_implicit
+          value: 111
+- key: config_11_debug
+  value:
+    - category: segment
+      key: segment_0
+      rule: PI >= 3
+      action: log_debug
+      fallthrough: true
+      value:
+        - category: treatment
+          key: treatment_group_00
+          rule: NY_ZIP in (10001, 10002, 10003)
+          fallthrough: true
+          action: log_debug
+          value:
+            - category: segment
+              key: segment_000
+              rule: NATURAL_CONSTANT_E > 1
+              value: 1000
+              fallthrough: true
+              action: log_debug
+            - category: segment
+              key: segment_001
+              action: log_debug
+              value: 1001
+        - category: treatment
+          key: treatment_group_01
+          rule: true
+          value: 101
+          action: log_debug
+    - category: segment
+      key: segment_1
+      rule: first_name == 'Alice'
+      action: log_debug
+      value:
+        - category: treatment
+          key: treatment_group_10
+          rule: last_name == 'Liddell'
+          value: 110
+          fallthrough: true
+          action: log_debug
+        - category: treatment
+          key: treatment_group_11
+          rule: true
+          fallthrough: false
+          action: log_debug
+          value: 111

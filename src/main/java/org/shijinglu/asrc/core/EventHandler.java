@@ -40,6 +40,10 @@ public class EventHandler {
             }
             return CompletableFuture.completedFuture(0);
         }
+        if (event != null && EVENTS_QUEUE.isEmpty()) {
+            // in most cases, we are sending just one event
+            return CompletableFuture.runAsync(() -> sender.send(event));
+        }
         CompletableFuture[] tasks =
                 EVENTS_QUEUE.stream()
                         .map(e -> CompletableFuture.supplyAsync(() -> sender.send(e)))
