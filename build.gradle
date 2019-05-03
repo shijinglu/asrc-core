@@ -10,6 +10,7 @@ sourceCompatibility = 1.8
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
+apply plugin: 'application'
 
 repositories {
     maven { url "https://jitpack.io" }
@@ -52,7 +53,6 @@ publishing {
                     }
                 }
                 scm {
-                    // git@github.com:shijinglu/asrc-core.git
                     connection = 'scm:git:git@github.com:shijinglu/asrc-core.git'
                     developerConnection = 'scm:git:ssh://github.com/shijinglu/asrc-core.git'
                     url = 'https://github.com/shijinglu/asrc-core'
