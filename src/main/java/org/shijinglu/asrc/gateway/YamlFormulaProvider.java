@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.shijinglu.asrc.core.Formula;
+import org.shijinglu.asrc.core.IFormula;
 import org.shijinglu.asrc.core.IFormulaProvider;
 import org.yaml.snakeyaml.Yaml;
 
@@ -52,6 +53,7 @@ public class YamlFormulaProvider implements IFormulaProvider {
      * @param yamlFileStream
      */
     public YamlFormulaProvider(String namespace, InputStream yamlFileStream) {
+
         rootDir = Paths.get("/");
         Map.Entry<Map<String, Formula>, Set<String>> parsed = loadYaml(yamlFileStream);
         allFormulas = ImmutableMap.of(namespace, parsed.getKey());
@@ -160,7 +162,7 @@ public class YamlFormulaProvider implements IFormulaProvider {
     }
 
     @Override
-    public Optional<Formula> getFormula(String namespace, String key) {
+    public Optional<IFormula> getFormula(String namespace, String key) {
         return Optional.ofNullable(this.allFormulas.get(namespace))
                 .flatMap(x -> Optional.ofNullable(x.get(key)));
     }

@@ -26,5 +26,5 @@ public interface IFormulaProvider {
      * @param key this is usually the key to a configuration
      * @return formula, empty if none is found
      */
-    Optional<Formula> getFormula(String namespace, String key);
+    Optional<IFormula> getFormula(String namespace, String key);
 }

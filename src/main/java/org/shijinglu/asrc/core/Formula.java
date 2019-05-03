@@ -12,7 +12,7 @@ import org.shijinglu.lure.core.IntData;
 import org.shijinglu.lure.core.StringData;
 import org.shijinglu.lure.extensions.IData;
 
-public class Formula {
+public class Formula implements IFormula {
 
     public enum FIELDS {
         KEY("key"),
