@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 group 'org.shijinglu'
@@ -10,7 +9,6 @@ sourceCompatibility = 1.8
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'application'
 
 repositories {
     maven { url "https://jitpack.io" }
@@ -25,10 +23,6 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '27.+'
     compile group: 'redis.clients', name: 'jedis', version: '2.+'
     implementation 'org.shijinglu:lure-java:v0.1.4'
-}
-
-application {
-    mainClassName = 'org.shijinglu.asrc.Main'
 }
 
 // Publish to Maven Repository
